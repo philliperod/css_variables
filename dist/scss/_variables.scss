@@ -1,4 +1,30 @@
-$main_font: 'Montserrat', sans-serif;
-$secondary_font: 'Nixie One', cursive;
+$font: (
+  family: (
+    header: (
+      Montserrat,
+      sans-serif
+    ),
+    text: (
+      Nixie One,
+      cursive
+    )
+  ),
+  weight: (
+    light: 300,
+    regular: 400,
+    semi_bold: 500,
+    bold: 600
+  )
+);
 
-$background_color: #2d2d37;
+$color: (
+  background: #fffffe,
+  header: #094067,
+  paragraph: #5f6c7b,
+  card_background: #094067,
+  card_header: #fffffe,
+  card_paragraph: #d8eefe,
+  card_button: #3da9fc,
+  card_text: #fffffe,
+  card_accent: #ef4565
+);
