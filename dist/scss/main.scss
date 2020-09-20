@@ -1,2 +1,6 @@
 @import './variables';
 @import './grid';
+
+body {
+  @include fallback(font-family, body);
+}

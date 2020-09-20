@@ -1,13 +1,8 @@
+// font variables
 $font: (
   family: (
-    header: (
-      Montserrat,
-      sans-serif
-    ),
-    text: (
-      Nixie One,
-      cursive
-    )
+    Montserrat,
+    sans-serif
   ),
   weight: (
     light: 300,
@@ -17,14 +12,89 @@ $font: (
   )
 );
 
-$color: (
+// color variables
+$colors: (
   background: #fffffe,
   header: #094067,
   paragraph: #5f6c7b,
-  card_background: #094067,
-  card_header: #fffffe,
-  card_paragraph: #d8eefe,
-  card_button: #3da9fc,
-  card_text: #fffffe,
-  card_accent: #ef4565
+  card-background: #094067,
+  card-header: #fffffe,
+  card-paragraph: #d8eefe,
+  card-button: #3da9fc,
+  card-text: #fffffe,
+  card-accent: #ef4565
 );
+
+// associated variable map name to actual variable map name
+$var-map: (
+  color: $colors,
+  font: $font
+);
+
+// which property uses which variable map
+$prop: (
+  background-color: color,
+  card-color: color,
+  text: color,
+  font-family: (
+    font,
+    family
+  ),
+  font_weight: (
+    font,
+    weight
+  )
+);
+
+// variable mixin that takes a property and variable name
+// and optional override to hide fallback
+@mixin fallback($prop, $value, $show-fall: true) {
+  // get the property's name
+  $map-name: map-get($prop, $prop);
+  $nest-name: null;
+  $nest-map-name: null;
+  $map: null;
+  $value-fall: null;
+  $value-output: null;
+
+  // if a list, go further for values
+  @if type-of($map-name) == list {
+    $nest-name: nth($map-name, 1);
+    $nest-map-name: nth($map-name, 2);
+  }
+
+  // if a nested map
+  @if $nest-name {
+    $map: map-get($value-map, $nest-name); // get map from nested map-name
+    $nest-map: map-get($map, $nest-map-name); // get nested map
+    $value-fall: map-get($nest-map, $value); // fallback value
+    $value-output: var(--#{$nest-name}-#{$nest-map-name}-#{$value}); // css variable output
+  }
+  else {
+    $map: map-get($value-map, $map-name); // get map from map name
+    $value-fall: map-get($map, $value); // fallback value
+    $value-output: var(--#{$map-name}-#{$value}); // css variable output
+  }
+
+  // if show fallbacks not overriden to be null
+  @if $show-fall {
+    #{$prop}: $value-fall;
+  }
+
+  #{$prop}: $value-output;
+}
+
+:root {
+  @each $value-map-name, $value-map in $var-map {
+    @each $value, $key in $value-map {
+      @if type-of($key) == map {
+        @each $value-n, $key-n in $key {
+          #{--$value-map-name}-#{$value}-#{$value-n}: $value-n;
+        }
+      }
+      else {
+        #{--$value-map-name}-#{$value}: $key;
+      }
+    }
+  }
+}
